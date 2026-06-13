@@ -2,12 +2,13 @@ use macroquad::prelude::*;
 
 mod meteor;
 
-const SPEED: f32 = 160.0;
 const RADIUS: f32 = 25.0;
 
 #[macroquad::main("Rusteors")]
 async fn main() {
-    let mut meteor = meteor::Meteor::new(screen_width() / 2.0, screen_height() / 2.0, RADIUS, BLUE, SPEED);
+    let start_position = Vec2::new(screen_width() / 2.0, screen_height() / 2.0);
+
+    let mut meteor = meteor::Meteor::new(start_position, RADIUS, BLUE, Vec2::new(160.0, -40.0));
 
     loop {
         clear_background(BLACK);
@@ -19,15 +20,23 @@ async fn main() {
     }
 }
 
+/// Draw a circle on the screen based on position in a space that wraps
+/// around in both x and y directions.
 fn draw_wrapped_circle(x: f32, y: f32, radius: f32, color: Color) {
     let w = screen_width();
+    let h = screen_height();
 
-    if x - radius < 0.0 {
-        draw_circle(x + w, y, radius, color);
-    } else if x + radius > w {
-        draw_circle(x - w, y, radius, color);
+    for dx in [0.0]
+        .into_iter()
+        .chain((x - radius < 0.0).then_some(w))
+        .chain((x + radius > w).then_some(-w))
+    {
+        for dy in [0.0]
+            .into_iter()
+            .chain((y - radius < 0.0).then_some(h))
+            .chain((y + radius > h).then_some(-h))
+        {
+            draw_circle(x + dx, y + dy, radius, color);
+        }
     }
-    
-    draw_circle(x, y, radius, color);
 }
-
