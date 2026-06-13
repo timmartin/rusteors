@@ -1,18 +1,19 @@
 use macroquad::prelude::*;
 
-const SPEED: f32 = 150.0;
+mod meteor;
+
+const SPEED: f32 = 160.0;
 const RADIUS: f32 = 25.0;
 
 #[macroquad::main("Rusteors")]
 async fn main() {
-    let mut x = RADIUS;
-    let y = screen_height() / 2.0;
+    let mut meteor = meteor::Meteor::new(screen_width() / 2.0, screen_height() / 2.0, RADIUS, BLUE, SPEED);
 
     loop {
-        x = (x + SPEED * get_frame_time()) % screen_width();
-
         clear_background(BLACK);
-        draw_wrapped_circle(x, y, RADIUS, BLUE);
+
+        meteor.update();
+        meteor.draw();
 
         next_frame().await
     }
