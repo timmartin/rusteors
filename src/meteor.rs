@@ -14,8 +14,24 @@ impl Meteor {
         Self { position, radius, color, speed }
     }
 
+    pub fn position(&self) -> Vec2 {
+        self.position
+    }
+
     pub fn update(&mut self) {
-        self.position += self.speed * get_frame_time();
+        fn wrap(value: f32, max: f32) -> f32 {
+            let wrapped = value % max;
+            if wrapped < 0.0 {
+                wrapped + max
+            } else {
+                wrapped
+            }
+        }
+
+        self.position = Vec2::new(
+            wrap(self.position.x + self.speed.x * get_frame_time(), screen_width()),
+            wrap(self.position.y + self.speed.y * get_frame_time(), screen_height()),
+        );
     }
 
     pub fn draw(&self) {

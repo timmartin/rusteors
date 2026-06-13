@@ -1,4 +1,6 @@
 use macroquad::prelude::*;
+use log::info;
+use simple_logger::SimpleLogger;
 
 mod meteor;
 
@@ -6,6 +8,8 @@ const RADIUS: f32 = 25.0;
 
 #[macroquad::main("Rusteors")]
 async fn main() {
+    SimpleLogger::new().init().unwrap();
+
     let start_position = Vec2::new(screen_width() / 2.0, screen_height() / 2.0);
 
     let mut meteor = meteor::Meteor::new(start_position, RADIUS, BLUE, Vec2::new(160.0, -40.0));
