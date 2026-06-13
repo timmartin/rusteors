@@ -14,6 +14,8 @@ impl Meteor {
         Self { position, radius, color, speed }
     }
 
+    /// Getter method for logging
+    #[allow(dead_code)]
     pub fn position(&self) -> Vec2 {
         self.position
     }
