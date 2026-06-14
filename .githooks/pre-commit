@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Skip when no Rust sources or Cargo files are staged.
+if ! git diff --cached --name-only | grep -qE '\.(rs|toml)$'; then
+    exit 0
+fi
+
+echo "Checking Rust formatting with cargo fmt..."
+
+if ! cargo fmt --check; then
+    echo >&2 "Formatting check failed. Run 'cargo fmt' and try again."
+    exit 1
+fi
