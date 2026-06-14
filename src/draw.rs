@@ -1,52 +1,68 @@
 use macroquad::prelude::*;
 
-/// Draw a circle on the screen based on position in a space that wraps
-/// around in both x and y directions.
-pub fn draw_wrapped_circle(x: f32, y: f32, radius: f32, color: Color) {
-    let w = screen_width();
-    let h = screen_height();
-
-    for dx in [0.0]
-        .into_iter()
-        .chain((x - radius < 0.0).then_some(w))
-        .chain((x + radius > w).then_some(-w))
-    {
-        for dy in [0.0]
-            .into_iter()
-            .chain((y - radius < 0.0).then_some(h))
-            .chain((y + radius > h).then_some(-h))
-        {
-            draw_circle(x + dx, y + dy, radius, color);
-        }
-    }
-}
-
-/// Draw a triangle on the screen with wrapping, using the center position for
-/// edge detection.
-pub fn draw_wrapped_triangle(
-    x: f32,
-    y: f32,
-    radius: f32,
-    v1: Vec2,
-    v2: Vec2,
-    v3: Vec2,
-    color: Color,
+/// Call a draw function, wrapping it round the screen (calling multiple times if
+/// necessary to simulate the drawn object wrapping)
+/// 
+/// # Arguments
+/// 
+/// * `bounding_size` - The width of a bounding box, measured from the middle
+///     point, that will contain the element being drawn.
+pub fn draw_wrapped(
+    position: Vec2,
+    bounding_size: f32,
+    draw: impl Fn(Vec2)
 ) {
     let w = screen_width();
     let h = screen_height();
 
     for dx in [0.0]
         .into_iter()
-        .chain((x - radius < 0.0).then_some(w))
-        .chain((x + radius > w).then_some(-w))
+        .chain((position.x - bounding_size < 0.0).then_some(w))
+        .chain((position.x + bounding_size > w).then_some(-w))
     {
         for dy in [0.0]
             .into_iter()
-            .chain((y - radius < 0.0).then_some(h))
-            .chain((y + radius > h).then_some(-h))
+            .chain((position.y - bounding_size < 0.0).then_some(h))
+            .chain((position.y + bounding_size > h).then_some(-h))
         {
-            let offset = Vec2::new(dx, dy);
-            draw_triangle(v1 + offset, v2 + offset, v3 + offset, color);
+            draw(Vec2::new(position.x + dx, position.y + dy));
         }
     }
+
+}
+
+/// Draw a circle on the screen based on position in a space that wraps
+/// around in both x and y directions.
+pub fn draw_wrapped_circle(position: Vec2, radius: f32, color: Color) {
+    let draw_circle_inner = |draw_position: Vec2| {
+        draw_circle(draw_position.x, draw_position.y, radius, color);
+    };
+
+    draw_wrapped(
+        position,
+        radius,
+        draw_circle_inner,
+    );
+}
+
+/// Draw a triangle on the screen with wrapping, using the center position for
+/// edge detection.
+pub fn draw_wrapped_triangle(
+    position: Vec2,
+    radius: f32,
+    v1: Vec2,
+    v2: Vec2,
+    v3: Vec2,
+    color: Color,
+) {
+    let draw_triangle_inner = |draw_position: Vec2| {
+        draw_triangle(
+            draw_position + (v1 - position),
+            draw_position + (v2 - position),
+            draw_position + (v3 - position),
+            color
+        );
+    };
+
+    draw_wrapped(position, radius, draw_triangle_inner);
 }

@@ -37,6 +37,6 @@ impl Meteor {
     }
 
     pub fn draw(&self) {
-        draw_wrapped_circle(self.position.x, self.position.y, self.radius, self.color);
+        draw_wrapped_circle(self.position, self.radius, self.color);
     }
 }

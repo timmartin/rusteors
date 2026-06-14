@@ -53,8 +53,7 @@ impl Ship {
     pub fn draw(&self) {
         let (nose, wing1, wing2) = self.triangle_vertices();
         draw_wrapped_triangle(
-            self.position.x,
-            self.position.y,
+            self.position,
             SHIP_SIZE,
             nose,
             wing1,
