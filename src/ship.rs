@@ -1,6 +1,7 @@
 use macroquad::prelude::*;
 
 use crate::draw::draw_wrapped_triangle;
+use crate::world::wrap_to_world_coordinates;
 
 pub struct Ship {
     position: Vec2,
@@ -22,15 +23,6 @@ impl Ship {
     }
 
     pub fn update(&mut self) {
-        fn wrap(value: f32, max: f32) -> f32 {
-            let wrapped = value % max;
-            if wrapped < 0.0 {
-                wrapped + max
-            } else {
-                wrapped
-            }
-        }
-
         let dt = get_frame_time();
         if is_key_down(KeyCode::Left) {
             self.angle -= ROTATION_SPEED * dt;
@@ -43,10 +35,7 @@ impl Ship {
             self.velocity += direction * THRUST_ACCELERATION * dt;
         }
 
-        self.position = Vec2::new(
-            wrap(self.position.x + self.velocity.x * dt, screen_width()),
-            wrap(self.position.y + self.velocity.y * dt, screen_height()),
-        );
+        self.position = wrap_to_world_coordinates(self.position + self.velocity * dt);
     }
 
     pub fn draw(&self) {

@@ -50,3 +50,9 @@ impl World {
         }
     }
 }
+
+pub fn wrap_to_world_coordinates(position: Vec2) -> Vec2 {
+    let w = screen_width();
+    let h = screen_height();
+    Vec2::new(position.x.rem_euclid(w), position.y.rem_euclid(h))
+}
