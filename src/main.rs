@@ -1,16 +1,12 @@
 use macroquad::prelude::*;
+use rusteors::World;
 use simple_logger::SimpleLogger;
-
-mod draw;
-mod meteor;
-mod ship;
-mod world;
 
 #[macroquad::main("Rusteors")]
 async fn main() {
     SimpleLogger::new().init().unwrap();
 
-    let mut world = world::World::new();
+    let mut world = World::new();
 
     loop {
         clear_background(BLACK);
