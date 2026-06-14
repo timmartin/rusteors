@@ -26,6 +26,10 @@ impl Meteor {
         self.position
     }
 
+    pub fn collision_radius(&self) -> f32 {
+        self.radius
+    }
+
     pub fn update(&mut self) {
         self.position = wrap_to_world_coordinates(self.position + self.speed * get_frame_time());
     }

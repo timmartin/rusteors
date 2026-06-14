@@ -23,6 +23,26 @@ impl Ship {
         }
     }
 
+    pub fn position(&self) -> Vec2 {
+        self.position
+    }
+
+    /// The radius of the ship's collision circle.
+    ///
+    /// The ship is not a circle of course, so we deliberately use a smaller
+    /// radius to avoid false positives. The assumption is that a user getting
+    /// away with a false negative will be happier than a user getting caught by a
+    /// false positive.
+    pub fn collision_radius(&self) -> f32 {
+        SHIP_SIZE * 0.7
+    }
+
+    pub fn reset_position(&mut self) {
+        self.position = Vec2::new(screen_width() / 2.0, screen_height() / 2.0);
+        self.velocity = Vec2::ZERO;
+        self.angle = -std::f32::consts::FRAC_PI_2;
+    }
+
     pub fn update(&mut self) {
         let dt = get_frame_time();
         if is_key_down(KeyCode::Left) {
