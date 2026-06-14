@@ -1,6 +1,6 @@
 use macroquad::prelude::*;
 
-use crate::draw_wrapped_triangle;
+use crate::draw::draw_wrapped_triangle;
 
 pub struct Ship {
     position: Vec2,

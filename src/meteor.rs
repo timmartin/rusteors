@@ -1,6 +1,6 @@
 use macroquad::prelude::*;
 
-use crate::draw_wrapped_circle;
+use crate::draw::draw_wrapped_circle;
 
 pub struct Meteor {
     position: Vec2,
