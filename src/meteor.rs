@@ -11,7 +11,12 @@ pub struct Meteor {
 
 impl Meteor {
     pub fn new(position: Vec2, radius: f32, color: Color, speed: Vec2) -> Self {
-        Self { position, radius, color, speed }
+        Self {
+            position,
+            radius,
+            color,
+            speed,
+        }
     }
 
     /// Getter method for logging
@@ -31,8 +36,14 @@ impl Meteor {
         }
 
         self.position = Vec2::new(
-            wrap(self.position.x + self.speed.x * get_frame_time(), screen_width()),
-            wrap(self.position.y + self.speed.y * get_frame_time(), screen_height()),
+            wrap(
+                self.position.x + self.speed.x * get_frame_time(),
+                screen_width(),
+            ),
+            wrap(
+                self.position.y + self.speed.y * get_frame_time(),
+                screen_height(),
+            ),
         );
     }
 

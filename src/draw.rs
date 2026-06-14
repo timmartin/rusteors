@@ -2,16 +2,12 @@ use macroquad::prelude::*;
 
 /// Call a draw function, wrapping it round the screen (calling multiple times if
 /// necessary to simulate the drawn object wrapping)
-/// 
+///
 /// # Arguments
-/// 
+///
 /// * `bounding_size` - The width of a bounding box, measured from the middle
 ///     point, that will contain the element being drawn.
-pub fn draw_wrapped(
-    position: Vec2,
-    bounding_size: f32,
-    draw: impl Fn(Vec2)
-) {
+pub fn draw_wrapped(position: Vec2, bounding_size: f32, draw: impl Fn(Vec2)) {
     let w = screen_width();
     let h = screen_height();
 
@@ -28,7 +24,6 @@ pub fn draw_wrapped(
             draw(Vec2::new(position.x + dx, position.y + dy));
         }
     }
-
 }
 
 /// Draw a circle on the screen based on position in a space that wraps
@@ -38,11 +33,7 @@ pub fn draw_wrapped_circle(position: Vec2, radius: f32, color: Color) {
         draw_circle(draw_position.x, draw_position.y, radius, color);
     };
 
-    draw_wrapped(
-        position,
-        radius,
-        draw_circle_inner,
-    );
+    draw_wrapped(position, radius, draw_circle_inner);
 }
 
 /// Draw a triangle on the screen with wrapping, using the center position for
@@ -60,7 +51,7 @@ pub fn draw_wrapped_triangle(
             draw_position + (v1 - position),
             draw_position + (v2 - position),
             draw_position + (v3 - position),
-            color
+            color,
         );
     };
 

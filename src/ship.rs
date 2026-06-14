@@ -39,27 +39,14 @@ impl Ship {
         }
 
         self.position = Vec2::new(
-            wrap(
-                self.position.x + self.velocity.x * dt,
-                screen_width(),
-            ),
-            wrap(
-                self.position.y + self.velocity.y * dt,
-                screen_height(),
-            ),
+            wrap(self.position.x + self.velocity.x * dt, screen_width()),
+            wrap(self.position.y + self.velocity.y * dt, screen_height()),
         );
     }
 
     pub fn draw(&self) {
         let (nose, wing1, wing2) = self.triangle_vertices();
-        draw_wrapped_triangle(
-            self.position,
-            SHIP_SIZE,
-            nose,
-            wing1,
-            wing2,
-            WHITE,
-        );
+        draw_wrapped_triangle(self.position, SHIP_SIZE, nose, wing1, wing2, WHITE);
     }
 
     fn triangle_vertices(&self) -> (Vec2, Vec2, Vec2) {
