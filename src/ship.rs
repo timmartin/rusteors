@@ -10,6 +10,7 @@ pub struct Ship {
 }
 
 const SHIP_SIZE: f32 = 15.0;
+const WING_SPREAD: f32 = 2.4;
 const ROTATION_SPEED: f32 = 3.0;
 const THRUST_ACCELERATION: f32 = 300.0;
 
@@ -31,7 +32,7 @@ impl Ship {
             self.angle += ROTATION_SPEED * dt;
         }
         if is_key_down(KeyCode::Space) {
-            let direction = Vec2::new(self.angle.cos(), self.angle.sin());
+            let direction = Vec2::from_angle(self.angle);
             self.velocity += direction * THRUST_ACCELERATION * dt;
         }
 
@@ -43,14 +44,18 @@ impl Ship {
         draw_wrapped_triangle(self.position, SHIP_SIZE, nose, wing1, wing2, WHITE);
     }
 
+    fn local_vertices() -> [Vec2; 3] {
+        [
+            Vec2::new(SHIP_SIZE, 0.0),
+            Vec2::from_angle(WING_SPREAD) * SHIP_SIZE * 0.6,
+            Vec2::from_angle(-WING_SPREAD) * SHIP_SIZE * 0.6,
+        ]
+    }
+
     fn triangle_vertices(&self) -> (Vec2, Vec2, Vec2) {
-        let cos = self.angle.cos();
-        let sin = self.angle.sin();
-        let nose = self.position + Vec2::new(cos, sin) * SHIP_SIZE;
-        let wing1 = self.position
-            + Vec2::new((self.angle + 2.4).cos(), (self.angle + 2.4).sin()) * SHIP_SIZE * 0.6;
-        let wing2 = self.position
-            + Vec2::new((self.angle - 2.4).cos(), (self.angle - 2.4).sin()) * SHIP_SIZE * 0.6;
+        let rotation = Mat2::from_angle(self.angle);
+        let [nose, wing1, wing2] =
+            Self::local_vertices().map(|vertex| self.position + rotation * vertex);
         (nose, wing1, wing2)
     }
 }
