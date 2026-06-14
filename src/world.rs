@@ -1,7 +1,9 @@
 use crate::meteor::Meteor;
+use crate::ship::Ship;
 use macroquad::prelude::*;
 
 pub struct World {
+    ship: Ship,
     meteors: Vec<Meteor>,
 }
 
@@ -28,16 +30,21 @@ impl World {
             GREEN,
             Vec2::new(60.0, 100.0),
         ));
-        Self { meteors }
+        Self {
+            ship: Ship::new(Vec2::new(screen_width() / 2.0, screen_height() / 2.0)),
+            meteors,
+        }
     }
 
     pub fn update(&mut self) {
+        self.ship.update();
         for meteor in &mut self.meteors {
             meteor.update();
         }
     }
 
     pub fn draw(&self) {
+        self.ship.draw();
         for meteor in &self.meteors {
             meteor.draw();
         }
