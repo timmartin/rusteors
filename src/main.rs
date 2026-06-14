@@ -2,44 +2,19 @@ use macroquad::prelude::*;
 use simple_logger::SimpleLogger;
 
 mod meteor;
-
-const RADIUS: f32 = 25.0;
+mod world;
 
 #[macroquad::main("Rusteors")]
 async fn main() {
     SimpleLogger::new().init().unwrap();
 
-    let mut meteors = [
-        meteor::Meteor::new(
-            Vec2::new(screen_width() / 2.0, screen_height() / 2.0),
-            RADIUS,
-            BLUE,
-            Vec2::new(160.0, -40.0),
-        ),
-        meteor::Meteor::new(
-            Vec2::new(screen_width() / 4.0, screen_height() / 4.0),
-            RADIUS * 0.8,
-            RED,
-            Vec2::new(-120.0, 80.0),
-        ),
-        meteor::Meteor::new(
-            Vec2::new(screen_width() * 3.0 / 4.0, screen_height() * 3.0 / 4.0),
-            RADIUS * 1.2,
-            GREEN,
-            Vec2::new(60.0, 100.0),
-        ),
-    ];
+    let mut world = world::World::new();
 
     loop {
         clear_background(BLACK);
 
-        for meteor in &mut meteors {
-            meteor.update();
-        }
-
-        for metor in &meteors {
-            metor.draw();
-        }
+        world.update();
+        world.draw();
 
         next_frame().await
     }
