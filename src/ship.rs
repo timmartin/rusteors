@@ -10,6 +10,7 @@ pub struct Ship {
 
 const SHIP_SIZE: f32 = 15.0;
 const ROTATION_SPEED: f32 = 3.0;
+const THRUST_ACCELERATION: f32 = 300.0;
 
 impl Ship {
     pub fn new(position: Vec2) -> Self {
@@ -36,6 +37,10 @@ impl Ship {
         }
         if is_key_down(KeyCode::Right) {
             self.angle += ROTATION_SPEED * dt;
+        }
+        if is_key_down(KeyCode::Space) {
+            let direction = Vec2::new(self.angle.cos(), self.angle.sin());
+            self.velocity += direction * THRUST_ACCELERATION * dt;
         }
 
         self.position = Vec2::new(
