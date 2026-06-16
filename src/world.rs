@@ -1,3 +1,4 @@
+use crate::bullet::Bullet;
 use crate::meteor::Meteor;
 use crate::ship::Ship;
 use macroquad::prelude::*;
@@ -5,6 +6,7 @@ use macroquad::prelude::*;
 pub struct World {
     ship: Ship,
     meteors: Vec<Meteor>,
+    bullets: Vec<Bullet>,
 }
 
 const INITIAL_METEOR_RADIUS: f32 = 25.0;
@@ -33,11 +35,23 @@ impl World {
         Self {
             ship: Ship::new(Vec2::new(screen_width() / 2.0, screen_height() / 2.0)),
             meteors,
+            bullets: Vec::new(),
         }
     }
 
     pub fn update(&mut self) {
         self.ship.update();
+
+        if let Some((position, direction)) = self.ship.try_fire() {
+            self.bullets.push(Bullet::new(position, direction));
+        }
+
+        for bullet in &mut self.bullets {
+            bullet.update();
+        }
+
+        self.bullets.retain(|bullet| !bullet.is_expired());
+
         let mut crashed = false;
 
         for meteor in &mut self.meteors {
@@ -63,6 +77,9 @@ impl World {
         self.ship.draw();
         for meteor in &self.meteors {
             meteor.draw();
+        }
+        for bullet in &self.bullets {
+            bullet.draw();
         }
     }
 

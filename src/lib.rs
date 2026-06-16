@@ -1,3 +1,4 @@
+mod bullet;
 mod draw;
 mod meteor;
 mod ship;

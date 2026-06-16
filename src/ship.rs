@@ -8,6 +8,7 @@ pub struct Ship {
     velocity: Vec2,
     angle: f32,
     invulnerable_time: Option<f32>,
+    fire_cooldown: f32,
 }
 
 const SHIP_SIZE: f32 = 15.0;
@@ -15,6 +16,7 @@ const WING_SPREAD: f32 = 2.4;
 const ROTATION_SPEED: f32 = 3.0;
 const THRUST_ACCELERATION: f32 = 300.0;
 const BLINK_INTERVAL: f32 = 0.1;
+const FIRE_COOLDOWN: f32 = 0.25;
 
 impl Ship {
     pub fn new(position: Vec2) -> Self {
@@ -23,6 +25,7 @@ impl Ship {
             velocity: Vec2::ZERO,
             angle: -std::f32::consts::FRAC_PI_2,
             invulnerable_time: None,
+            fire_cooldown: 0.0,
         }
     }
 
@@ -54,6 +57,19 @@ impl Ship {
         self.invulnerable_time = Some(3.0);
     }
 
+    /// Attempt to fire a bullet. Returns spawn position and direction if the
+    /// cooldown has elapsed and space is held.
+    pub fn try_fire(&mut self) -> Option<(Vec2, Vec2)> {
+        if self.fire_cooldown > 0.0 || !is_key_down(KeyCode::Space) {
+            return None;
+        }
+
+        self.fire_cooldown = FIRE_COOLDOWN;
+        let direction = Vec2::from_angle(self.angle);
+        let spawn_position = self.position + direction * SHIP_SIZE;
+        Some((spawn_position, direction))
+    }
+
     pub fn update(&mut self) {
         let dt = get_frame_time();
         if is_key_down(KeyCode::Left) {
@@ -62,12 +78,14 @@ impl Ship {
         if is_key_down(KeyCode::Right) {
             self.angle += ROTATION_SPEED * dt;
         }
-        if is_key_down(KeyCode::Space) {
+        if is_key_down(KeyCode::Up) {
             let direction = Vec2::from_angle(self.angle);
             self.velocity += direction * THRUST_ACCELERATION * dt;
         }
 
         self.position = wrap_to_world_coordinates(self.position + self.velocity * dt);
+
+        self.fire_cooldown = (self.fire_cooldown - dt).max(0.0);
 
         if let Some(invulnerable_time) = self.invulnerable_time {
             self.invulnerable_time = Some(invulnerable_time - dt);
