@@ -42,12 +42,14 @@ impl World {
 
         for meteor in &mut self.meteors {
             meteor.update();
-            if is_colliding(
-                self.ship.position(),
-                self.ship.collision_radius(),
-                meteor.position(),
-                meteor.collision_radius(),
-            ) {
+            if !self.ship.invulnerable()
+                && is_colliding(
+                    self.ship.position(),
+                    self.ship.collision_radius(),
+                    meteor.position(),
+                    meteor.collision_radius(),
+                )
+            {
                 crashed = true;
             }
         }
@@ -66,6 +68,7 @@ impl World {
 
     fn crash(&mut self) {
         self.ship.reset_position();
+        self.ship.set_invulnerable();
     }
 }
 

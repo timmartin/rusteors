@@ -7,6 +7,7 @@ pub struct Ship {
     position: Vec2,
     velocity: Vec2,
     angle: f32,
+    invulnerable_time: Option<f32>,
 }
 
 const SHIP_SIZE: f32 = 15.0;
@@ -20,6 +21,7 @@ impl Ship {
             position,
             velocity: Vec2::ZERO,
             angle: -std::f32::consts::FRAC_PI_2,
+            invulnerable_time: None,
         }
     }
 
@@ -43,6 +45,14 @@ impl Ship {
         self.angle = -std::f32::consts::FRAC_PI_2;
     }
 
+    pub fn invulnerable(&self) -> bool {
+        self.invulnerable_time.is_some()
+    }
+
+    pub fn set_invulnerable(&mut self) {
+        self.invulnerable_time = Some(3.0);
+    }
+
     pub fn update(&mut self) {
         let dt = get_frame_time();
         if is_key_down(KeyCode::Left) {
@@ -57,11 +67,25 @@ impl Ship {
         }
 
         self.position = wrap_to_world_coordinates(self.position + self.velocity * dt);
+
+        if let Some(invulnerable_time) = self.invulnerable_time {
+            self.invulnerable_time = Some(invulnerable_time - dt);
+            if self.invulnerable_time.unwrap() <= 0.0 {
+                self.invulnerable_time = None;
+            }
+        }
     }
 
     pub fn draw(&self) {
         let (nose, wing1, wing2) = self.triangle_vertices();
-        draw_wrapped_triangle(self.position, SHIP_SIZE, nose, wing1, wing2, WHITE);
+
+        let draw_color = if let Some(invulnerable_time) = self.invulnerable_time {
+            GREEN
+        } else {
+            WHITE
+        };
+
+        draw_wrapped_triangle(self.position, SHIP_SIZE, nose, wing1, wing2, draw_color);
     }
 
     fn local_vertices() -> [Vec2; 3] {
