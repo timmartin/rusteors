@@ -14,6 +14,7 @@ const SHIP_SIZE: f32 = 15.0;
 const WING_SPREAD: f32 = 2.4;
 const ROTATION_SPEED: f32 = 3.0;
 const THRUST_ACCELERATION: f32 = 300.0;
+const BLINK_INTERVAL: f32 = 0.1;
 
 impl Ship {
     pub fn new(position: Vec2) -> Self {
@@ -79,13 +80,15 @@ impl Ship {
     pub fn draw(&self) {
         let (nose, wing1, wing2) = self.triangle_vertices();
 
-        let draw_color = if let Some(invulnerable_time) = self.invulnerable_time {
-            GREEN
+        let draw = if let Some(invulnerable_time) = self.invulnerable_time {
+            ((invulnerable_time / BLINK_INTERVAL) as i32).rem_euclid(2) == 0
         } else {
-            WHITE
+            true
         };
 
-        draw_wrapped_triangle(self.position, SHIP_SIZE, nose, wing1, wing2, draw_color);
+        if draw {
+            draw_wrapped_triangle(self.position, SHIP_SIZE, nose, wing1, wing2, WHITE);
+        }
     }
 
     fn local_vertices() -> [Vec2; 3] {
