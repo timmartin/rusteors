@@ -6,4 +6,5 @@ edition = "2024"
 [dependencies]
 log = "0.4.32"
 macroquad = "0.4.15"
+macroquad-particles = "0.2.2"
 simple_logger = "5.2.0"

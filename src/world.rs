@@ -1,12 +1,15 @@
 use crate::bullet::Bullet;
+use crate::explosion::particle_explosion;
 use crate::meteor::Meteor;
 use crate::ship::Ship;
 use macroquad::prelude::*;
+use macroquad_particles::Emitter;
 
 pub struct World {
     ship: Ship,
     meteors: Vec<Meteor>,
     bullets: Vec<Bullet>,
+    explosion_emitter: Emitter,
 }
 
 const INITIAL_METEOR_RADIUS: f32 = 25.0;
@@ -36,6 +39,7 @@ impl World {
             ship: Ship::new(Vec2::new(screen_width() / 2.0, screen_height() / 2.0)),
             meteors,
             bullets: Vec::new(),
+            explosion_emitter: Emitter::new(particle_explosion()),
         }
     }
 
@@ -73,7 +77,7 @@ impl World {
         }
     }
 
-    pub fn draw(&self) {
+    pub fn draw(&mut self) {
         self.ship.draw();
         for meteor in &self.meteors {
             meteor.draw();
@@ -81,9 +85,12 @@ impl World {
         for bullet in &self.bullets {
             bullet.draw();
         }
+        self.explosion_emitter.draw(Vec2::ZERO);
     }
 
     fn crash(&mut self) {
+        self.explosion_emitter.emit(self.ship.position(), 50);
+
         self.ship.reset_position();
         self.ship.set_invulnerable();
     }
