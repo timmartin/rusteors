@@ -26,6 +26,25 @@ pub fn draw_wrapped(position: Vec2, bounding_size: f32, draw: impl Fn(Vec2)) {
     }
 }
 
+/// Draw a texture on the screen with wrapping, centered on the given position.
+pub fn draw_wrapped_texture(position: Vec2, radius: f32, texture: &Texture2D) {
+    let size = radius * 2.0;
+    let draw_texture_inner = |draw_position: Vec2| {
+        draw_texture_ex(
+            texture,
+            draw_position.x - radius,
+            draw_position.y - radius,
+            WHITE,
+            DrawTextureParams {
+                dest_size: Some(vec2(size, size)),
+                ..Default::default()
+            },
+        );
+    };
+
+    draw_wrapped(position, radius, draw_texture_inner);
+}
+
 /// Draw a circle on the screen based on position in a space that wraps
 /// around in both x and y directions.
 pub fn draw_wrapped_circle(position: Vec2, radius: f32, color: Color) {

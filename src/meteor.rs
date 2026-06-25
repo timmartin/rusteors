@@ -1,22 +1,22 @@
 use macroquad::prelude::*;
 
-use crate::draw::draw_wrapped_circle;
+use crate::draw::draw_wrapped_texture;
 use crate::world::wrap_to_world_coordinates;
 
 pub struct Meteor {
     position: Vec2,
     speed: Vec2,
     radius: f32,
-    color: Color,
+    texture: Texture2D,
 }
 
 impl Meteor {
-    pub fn new(position: Vec2, radius: f32, color: Color, speed: Vec2) -> Self {
+    pub fn new(position: Vec2, radius: f32, speed: Vec2, texture: Texture2D) -> Self {
         Self {
             position,
             radius,
-            color,
             speed,
+            texture,
         }
     }
 
@@ -35,6 +35,6 @@ impl Meteor {
     }
 
     pub fn draw(&self) {
-        draw_wrapped_circle(self.position, self.radius, self.color);
+        draw_wrapped_texture(self.position, self.radius, &self.texture);
     }
 }
