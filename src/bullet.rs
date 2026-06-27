@@ -22,6 +22,14 @@ impl Bullet {
         }
     }
 
+    pub fn position(&self) -> Vec2 {
+        self.position
+    }
+
+    pub fn radius(&self) -> f32 {
+        BULLET_RADIUS
+    }
+
     pub fn update(&mut self) {
         self.position = wrap_to_world_coordinates(self.position + self.velocity * get_frame_time());
         self.lifetime -= get_frame_time();
@@ -29,6 +37,10 @@ impl Bullet {
 
     pub fn is_expired(&self) -> bool {
         self.lifetime <= 0.0
+    }
+
+    pub fn collided(&mut self) {
+        self.lifetime = 0.0;
     }
 
     pub fn draw(&self) {

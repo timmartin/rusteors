@@ -1,6 +1,6 @@
 use crate::bullet::Bullet;
 use crate::explosion::particle_explosion;
-use crate::meteor::Meteor;
+use crate::meteor::{Meteor, MeteorSize};
 use crate::ship::Ship;
 use crate::textures::Textures;
 use macroquad::prelude::*;
@@ -21,19 +21,19 @@ impl World {
         let mut meteors = Vec::new();
         meteors.push(Meteor::new(
             Vec2::new(screen_width() / 3.0, screen_height() / 2.0),
-            INITIAL_METEOR_RADIUS,
+            MeteorSize::Large,
             Vec2::new(160.0, -40.0),
             meteor_texture.clone(),
         ));
         meteors.push(Meteor::new(
             Vec2::new(screen_width() / 4.0, screen_height() / 4.0),
-            INITIAL_METEOR_RADIUS,
+            MeteorSize::Large,
             Vec2::new(-120.0, 80.0),
             meteor_texture.clone(),
         ));
         meteors.push(Meteor::new(
             Vec2::new(screen_width() * 3.0 / 4.0, screen_height() * 3.0 / 4.0),
-            INITIAL_METEOR_RADIUS,
+            MeteorSize::Large,
             Vec2::new(60.0, 100.0),
             meteor_texture,
         ));
@@ -54,6 +54,19 @@ impl World {
 
         for bullet in &mut self.bullets {
             bullet.update();
+
+            for meteor in &mut self.meteors {
+                if is_colliding(
+                    bullet.position(),
+                    bullet.radius(),
+                    meteor.position(),
+                    meteor.radius(),
+                ) {
+                    self.explosion_emitter.emit(bullet.position(), 10);
+                    bullet.collided();
+                    break;
+                }
+            }
         }
 
         self.bullets.retain(|bullet| !bullet.is_expired());
