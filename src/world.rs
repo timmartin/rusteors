@@ -13,8 +13,6 @@ pub struct World {
     explosion_emitter: Emitter,
 }
 
-const INITIAL_METEOR_RADIUS: f32 = 25.0;
-
 impl World {
     pub fn new(textures: Textures) -> Self {
         let meteor_texture = textures.meteor;
@@ -64,12 +62,14 @@ impl World {
                 ) {
                     self.explosion_emitter.emit(bullet.position(), 10);
                     bullet.collided();
+                    meteor.handle_bullet_hit();
                     break;
                 }
             }
         }
 
         self.bullets.retain(|bullet| !bullet.is_expired());
+        self.meteors.retain(|meteor| !meteor.is_expired());
 
         let mut crashed = false;
 

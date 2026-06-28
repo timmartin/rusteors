@@ -24,6 +24,13 @@ pub struct Meteor {
     position: Vec2,
     speed: Vec2,
     size: MeteorSize,
+
+    /// Whether the meteor has been destroyed. This could live outside Meteor,
+    /// but I'm considering having different meteor behavior e.g. where the
+    /// meteor might be hit and throw off shards, but not be totally destroyed.
+    /// Therefore the Meteor will be responsible for deciding when it's expired.
+    is_expired: bool,
+
     texture: Texture2D,
 }
 
@@ -34,6 +41,7 @@ impl Meteor {
             size,
             speed,
             texture,
+            is_expired: false,
         }
     }
 
@@ -43,6 +51,14 @@ impl Meteor {
 
     pub fn radius(&self) -> f32 {
         self.size.radius()
+    }
+
+    pub fn is_expired(&self) -> bool {
+        self.is_expired
+    }
+
+    pub fn handle_bullet_hit(&mut self) {
+        self.is_expired = true;
     }
 
     pub fn collision_radius(&self) -> f32 {
