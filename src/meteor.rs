@@ -13,9 +13,9 @@ pub enum MeteorSize {
 impl MeteorSize {
     pub fn radius(&self) -> f32 {
         match self {
-            MeteorSize::Large => 25.0,
-            MeteorSize::Medium => 15.0,
-            MeteorSize::Small => 10.0,
+            MeteorSize::Large => 40.0,
+            MeteorSize::Medium => 25.0,
+            MeteorSize::Small => 15.0,
         }
     }
 }
