@@ -50,6 +50,8 @@ impl World {
             self.bullets.push(Bullet::new(position, direction));
         }
 
+        let mut additional_meteors: Vec<Meteor> = Vec::new();
+
         for bullet in &mut self.bullets {
             bullet.update();
 
@@ -62,11 +64,13 @@ impl World {
                 ) {
                     self.explosion_emitter.emit(bullet.position(), 10);
                     bullet.collided();
-                    meteor.handle_bullet_hit();
+                    additional_meteors.extend(meteor.handle_bullet_hit());
                     break;
                 }
             }
         }
+
+        self.meteors.extend(additional_meteors);
 
         self.bullets.retain(|bullet| !bullet.is_expired());
         self.meteors.retain(|meteor| !meteor.is_expired());

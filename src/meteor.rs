@@ -3,7 +3,7 @@ use macroquad::prelude::*;
 use crate::draw::draw_wrapped_texture;
 use crate::world::wrap_to_world_coordinates;
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, PartialEq)]
 pub enum MeteorSize {
     Large,
     Medium,
@@ -57,8 +57,43 @@ impl Meteor {
         self.is_expired
     }
 
-    pub fn handle_bullet_hit(&mut self) {
+    pub fn handle_bullet_hit(&mut self) -> Vec<Meteor> {
         self.is_expired = true;
+
+        let shard_split_angle: f32 = rand::gen_range(0.0, 2.0) * std::f32::consts::PI;
+
+        let shard_directions = vec![
+            Mat2::from_angle(shard_split_angle),
+            Mat2::from_angle(shard_split_angle + std::f32::consts::PI),
+        ];
+
+        if self.size == MeteorSize::Large {
+            shard_directions
+                .iter()
+                .map(|direction| {
+                    Meteor::new(
+                        self.position,
+                        MeteorSize::Medium,
+                        *direction * self.speed,
+                        self.texture.clone(),
+                    )
+                })
+                .collect()
+        } else if self.size == MeteorSize::Medium {
+            shard_directions
+                .iter()
+                .map(|direction| {
+                    Meteor::new(
+                        self.position,
+                        MeteorSize::Small,
+                        *direction * self.speed,
+                        self.texture.clone(),
+                    )
+                })
+                .collect()
+        } else {
+            vec![]
+        }
     }
 
     pub fn collision_radius(&self) -> f32 {
