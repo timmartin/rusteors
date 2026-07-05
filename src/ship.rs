@@ -89,7 +89,7 @@ impl Ship {
 
         if let Some(invulnerable_time) = self.invulnerable_time {
             self.invulnerable_time = Some(invulnerable_time - dt);
-            if self.invulnerable_time.unwrap() <= 0.0 {
+            if self.invulnerable_time <= Some(0.0) {
                 self.invulnerable_time = None;
             }
         }
