@@ -31,8 +31,9 @@ impl Bullet {
     }
 
     pub fn update(&mut self) {
-        self.position = wrap_to_world_coordinates(self.position + self.velocity * get_frame_time());
-        self.lifetime -= get_frame_time();
+        let dt = get_frame_time();
+        self.position = wrap_to_world_coordinates(self.position + self.velocity * dt);
+        self.lifetime -= dt;
     }
 
     pub fn is_expired(&self) -> bool {

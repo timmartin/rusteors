@@ -67,8 +67,8 @@ impl Meteor {
             Mat2::from_angle(shard_split_angle + std::f32::consts::PI),
         ];
 
-        if self.size == MeteorSize::Large {
-            shard_directions
+        match self.size {
+            MeteorSize::Large => shard_directions
                 .iter()
                 .map(|direction| {
                     Meteor::new(
@@ -78,9 +78,8 @@ impl Meteor {
                         self.texture.clone(),
                     )
                 })
-                .collect()
-        } else if self.size == MeteorSize::Medium {
-            shard_directions
+                .collect(),
+            MeteorSize::Medium => shard_directions
                 .iter()
                 .map(|direction| {
                     Meteor::new(
@@ -90,9 +89,10 @@ impl Meteor {
                         self.texture.clone(),
                     )
                 })
-                .collect()
-        } else {
-            vec![]
+                .collect(),
+            MeteorSize::Small => {
+                vec![]
+            }
         }
     }
 
